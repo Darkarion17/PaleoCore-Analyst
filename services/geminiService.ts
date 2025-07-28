@@ -3,11 +3,11 @@ import { GoogleGenAI, GenerateContentResponse, Type, Content } from "@google/gen
 import type { Section, DataPoint, Microfossil, PartialMicrofossil, Taxonomy, EcologicalData, TiePoint } from '../types';
 import { COMMON_DATA_KEYS } from "../constants";
 
-if (!process.env.API_KEY) {
+if (!import.meta.env.VITE_GEMINI_API_KEY) {
     console.error("API_KEY environment variable not set. AI features will be disabled.");
 }
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY! });
+const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY! });
 
 const formatSectionDataForChat = (section: Section): string => {
     let dataSummary = 'No data points provided for this section.';
@@ -27,7 +27,7 @@ const formatSectionDataForChat = (section: Section): string => {
 };
 
 export const getAnalysisFromAIStream = async (section: Section, query: string): Promise<AsyncGenerator<GenerateContentResponse>> => {
-    if (!process.env.API_KEY) {
+    if (!import.meta.env.VITE_GEMINI_API_KEY) {
         throw new Error("Error: API key is not configured. Please contact the administrator.");
     }
     
@@ -55,7 +55,7 @@ export const getAnalysisFromAIStream = async (section: Section, query: string): 
 
 
 export const generateSectionSummary = async (section: Section, microfossils: Microfossil[]): Promise<string> => {
-    if (!process.env.API_KEY) {
+    if (!import.meta.env.VITE_GEMINI_API_KEY) {
         return "Error: API key is not configured.";
     }
     
@@ -110,7 +110,7 @@ export const generateSectionSummary = async (section: Section, microfossils: Mic
 };
 
 export const mapCsvHeaders = async (headers: string[]): Promise<Record<string, string | null>> => {
-    if (!process.env.API_KEY) throw new Error("API key is not configured.");
+    if (!import.meta.env.VITE_GEMINI_API_KEY) throw new Error("API key is not configured.");
     
     const model = 'gemini-2.5-flash';
     const knownKeys = Object.keys(COMMON_DATA_KEYS);
@@ -160,7 +160,7 @@ export const mapCsvHeaders = async (headers: string[]): Promise<Record<string, s
 };
 
 export const identifyFossilFromImage = async (base64Image: string, mimeType: string): Promise<string> => {
-    if (!process.env.API_KEY) return "Error: API key is not configured.";
+    if (!import.meta.env.VITE_GEMINI_API_KEY) return "Error: API key is not configured.";
 
     const model = 'gemini-2.5-flash';
     const imagePart = {
@@ -238,7 +238,7 @@ export const parseFossilAnalysis = (analysisText: string): PartialMicrofossil =>
 
 
 export const generateAgeModel = async (sections: Section[], tiePoints: TiePoint[]): Promise<Section[]> => {
-    if (!process.env.API_KEY) throw new Error("API key is not configured.");
+    if (!import.meta.env.VITE_GEMINI_API_KEY) throw new Error("API key is not configured.");
 
     const model = 'gemini-2.5-flash';
     const systemInstruction = `You are a highly skilled paleoceanographic data scientist. Your task is to create an age model for a set of sediment sections from the same core.
